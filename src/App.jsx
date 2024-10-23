@@ -1,3 +1,12 @@
+import { Outlet } from 'react-router-dom';
+
 export default function App() {
-  return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
+  return (
+    <>
+      <header>
+        <h1>hi</h1>
+      </header>
+      <Outlet />
+    </>
+  );
 }
