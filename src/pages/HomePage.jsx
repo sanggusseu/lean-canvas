@@ -1,43 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CanvasList from '../components/home/CanvasList';
 import ViewToggle from '../components/home/ViewToggle';
 import SearchBar from '../components/home/SearchBar';
 
 function Home() {
-  const [dummyData, setDummyDate] = useState([
-    {
-      id: 1,
-      title: '친환경 도시 농업 플랫폼',
-      lastModified: '2023-06-15',
-      category: '농업',
-    },
-    {
-      id: 2,
-      title: 'AI 기반 건강 관리 앱',
-      lastModified: '2023-06-10',
-      category: '헬스케어',
-    },
-    {
-      id: 3,
-      title: '온디맨드 물류 서비스',
-      lastModified: '2023-06-05',
-      category: '물류',
-    },
-    {
-      id: 4,
-      title: 'VR 가상 여행 서비스',
-      lastModified: '2023-06-01',
-      category: '여행',
-    },
-  ]);
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isGridView, setIsGridView] = useState(true);
-  const filteredData = dummyData.filter(item =>
+  const filteredData = data.filter(item =>
     item.title.toLowerCase().includes(searchText.toLowerCase()),
   );
   const handleDeleteItem = id => {
-    setDummyDate(dummyData.filter(item => item.id !== id));
+    setData(data.filter(item => item.id !== id));
   };
+
+  const fetchData = async () => {
+    const data = await fetch('http://localhost:8000/canvases')
+      .then(response => response.json())
+      .catch(console.error);
+    setData(data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
