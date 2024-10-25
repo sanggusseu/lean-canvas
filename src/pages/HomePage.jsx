@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import CanvasList from '../components/home/CanvasList';
 import ViewToggle from '../components/home/ViewToggle';
 import SearchBar from '../components/home/SearchBar';
-import axios from 'axios';
 import { getCanvases } from '../api/canvas';
 
 function Home() {
@@ -17,11 +16,6 @@ function Home() {
   };
 
   const fetchData = async () => {
-    // const data = await fetch('http://localhost:8000/canvases')
-    //   .then(response => response.json())
-    //   .catch(console.error);
-    // const response = await axios.get('http://localhost:8000/canvases');
-    // console.log(response);
     const response = await getCanvases();
     setData(response.data);
   };
