@@ -21,3 +21,7 @@ export const createCanvas = () => {
   };
   return canvases.post('/', newCanvas);
 };
+
+export const deleteCanvas = async id => {
+  await canvases.delete(`/${id}`);
+};
