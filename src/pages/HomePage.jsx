@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import CanvasList from '../components/home/CanvasList';
 import ViewToggle from '../components/home/ViewToggle';
 import SearchBar from '../components/home/SearchBar';
-import { getCanvases } from '../api/canvas';
+import { createCanvas, getCanvases } from '../api/canvas';
 import Loading from '../components/common/Loading';
 import Error from '../components/common/Error';
+import Button from '../components/common/Button';
 
 function Home() {
   const [data, setData] = useState([]);
@@ -12,6 +13,20 @@ function Home() {
   const [isGridView, setIsGridView] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoadingCreate, setIsLoadingCreate] = useState(false);
+
+  const handleCreateCanvas = async () => {
+    try {
+      setIsLoadingCreate(true);
+      await new Promise(resolver => setTimeout(resolver, 1000));
+      await createCanvas();
+      fetchData({ title_like: searchText });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsLoadingCreate(false);
+    }
+  };
 
   const handleDeleteItem = id => {
     setData(data.filter(item => item.id !== id));
@@ -40,6 +55,11 @@ function Home() {
       <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
         <SearchBar searchText={searchText} setSearchText={setSearchText} />
         <ViewToggle isGridView={isGridView} setIsGridView={setIsGridView} />
+      </div>
+      <div className="flex justify-end mb-6">
+        <Button onClick={handleCreateCanvas} loading={isLoadingCreate}>
+          등록하기
+        </Button>
       </div>
 
       {isLoading && <Loading />}
