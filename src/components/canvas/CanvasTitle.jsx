@@ -1,20 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCheck, FaEdit } from 'react-icons/fa';
 
-export default function CanvasTitle() {
+export default function CanvasTitle({ value, onUpdateTitle }) {
+  const [title, setTitle] = useState(value);
+  useEffect(() => {
+    setTitle(value);
+  }, [value]);
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState('Lean Canvas');
-  const [editingTitle, setEditingTitle] = useState(title);
-
-  const handleEditTitle = () => {
-    setIsEditing(true);
-  };
-
-  const handleTitleChange = e => setEditingTitle(e.target.value);
 
   const handleTitleSubmit = () => {
-    setTitle(editingTitle);
     setIsEditing(false);
+    onUpdateTitle(title);
   };
 
   return (
@@ -23,8 +19,8 @@ export default function CanvasTitle() {
         <div className="flex items-center">
           <input
             type="text"
-            value={editingTitle}
-            onChange={handleTitleChange}
+            value={title}
+            onChange={e => setTitle(e.target.value)}
             className="text-4xl font-bold text-center text-blue-600 bg-transparent border-b-2 border-blue-600 focus:outline-none"
           />
           <button
@@ -41,7 +37,7 @@ export default function CanvasTitle() {
           <button
             className="ml-2 p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
             aria-label="Edit title"
-            onClick={handleEditTitle}
+            onClick={() => setIsEditing(true)}
           >
             <FaEdit />
           </button>

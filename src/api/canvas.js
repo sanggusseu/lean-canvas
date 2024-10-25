@@ -25,3 +25,11 @@ export const createCanvas = () => {
 export const deleteCanvas = async id => {
   await canvases.delete(`/${id}`);
 };
+
+export const getCanvasById = id => {
+  return canvases.get(`/${id}`);
+};
+
+export const updateTitle = async (id, title) => {
+  await canvases.patch(`/${id}`, { title });
+};
