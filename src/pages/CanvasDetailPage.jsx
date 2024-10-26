@@ -6,12 +6,12 @@ import { useParams } from 'react-router-dom';
 
 export default function CanvasDetailPage() {
   const { id } = useParams();
-  const [data, setData] = useState();
+  const [canvas, setCanvas] = useState();
 
   useEffect(() => {
     const fetchCanvas = async () => {
       const response = await getCanvasById(id);
-      setData(response.data);
+      setCanvas(response.data);
     };
     fetchCanvas();
   }, [id]);
@@ -25,8 +25,8 @@ export default function CanvasDetailPage() {
   };
   return (
     <div>
-      <CanvasTitle value={data?.title} onUpdateTitle={handleUpdateTitle} />
-      <LeanCanvas />
+      <CanvasTitle value={canvas?.title} onUpdateTitle={handleUpdateTitle} />
+      {canvas && <LeanCanvas canvas={canvas} />}
     </div>
   );
 }
