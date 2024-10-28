@@ -6,26 +6,27 @@ import { createCanvas, deleteCanvas, getCanvases } from '../api/canvas';
 import Loading from '../components/common/Loading';
 import Error from '../components/common/Error';
 import Button from '../components/common/Button';
+import useApiRequest from '../hooks/useApiRequest';
 
 function Home() {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [isGridView, setIsGridView] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isLoadingCreate, setIsLoadingCreate] = useState(false);
+
+  const { isLoading, error, execute: fetchData } = useApiRequest(getCanvases);
+  const { isLoading: isLoadingCreate, execute: createNewCanvas } =
+    useApiRequest(createCanvas);
 
   const handleCreateCanvas = async () => {
-    try {
-      setIsLoadingCreate(true);
-      await new Promise(resolver => setTimeout(resolver, 1000));
-      await createCanvas();
-      fetchData({ title_like: searchText });
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setIsLoadingCreate(false);
-    }
+    createNewCanvas(null, {
+      onSuccess: () => {
+        fetchData(
+          { title_like: searchText },
+          { onSuccess: response => setData(response.data) },
+        );
+      },
+      onError: err => alert(err.message),
+    });
   };
 
   const handleDeleteItem = async id => {
@@ -38,27 +39,11 @@ function Home() {
     }
   };
 
-  const fetchData = async params => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      await new Promise(resolver => setTimeout(resolver, 1000));
-      const response = await getCanvases(params);
-      setData(response.data);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    const testObj = {
-      problem: { notes: [{ id: 1, content: 'ㅋㅌ', color: 'red' }] },
-    };
-    console.log(testObj);
-    console.log(testObj.problem);
-    fetchData({ title_like: searchText });
+    fetchData(
+      { title_like: searchText },
+      { onSuccess: response => setData(response.data) },
+    );
   }, [searchText]);
 
   return (
