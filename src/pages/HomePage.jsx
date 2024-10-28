@@ -53,6 +53,11 @@ function Home() {
   };
 
   useEffect(() => {
+    const testObj = {
+      problem: { notes: [{ id: 1, content: 'ㅋㅌ', color: 'red' }] },
+    };
+    console.log(testObj);
+    console.log(testObj.problem);
     fetchData({ title_like: searchText });
   }, [searchText]);
 

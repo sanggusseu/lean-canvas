@@ -1,11 +1,29 @@
-import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import Note from './Note';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function CanvasCard({ title, isSubtitle = false, notes = [] }) {
-  const createNote = () => {};
-  const handleRemoveNote = id => {};
+export default function CanvasCard({
+  title,
+  isSubtitle = false,
+  notes = [],
+  onNotesChange,
+}) {
+  const handleAddNote = () => {
+    const newNote = {
+      id: uuidv4(),
+      content: '',
+      color: '',
+    };
+    onNotesChange([...notes, newNote]);
+  };
+  const handleRemoveNote = id => {
+    onNotesChange(notes.filter(note => note.id !== id));
+  };
+  const handleUpdateNote = (id, content, color) => {
+    onNotesChange(
+      notes.map(note => (note.id === id ? { ...note, content, color } : note)),
+    );
+  };
   return (
     <div className="row-span-1 bg-white min-h-48 border border-collapse border-gray-300">
       <div
@@ -13,7 +31,7 @@ export default function CanvasCard({ title, isSubtitle = false, notes = [] }) {
       >
         <h3 className={isSubtitle === false ? 'font-bold' : ''}>{title}</h3>
         <button
-          onClick={createNote}
+          onClick={handleAddNote}
           className="bg-blue-400  text-white p-1.5 text-xs rounded-md"
         >
           <FaPlus />
@@ -26,6 +44,7 @@ export default function CanvasCard({ title, isSubtitle = false, notes = [] }) {
             key={note.id}
             id={note.id}
             onRemoveNote={handleRemoveNote}
+            onUpdateNote={handleUpdateNote}
             content={note.content}
             color={note.color}
           />

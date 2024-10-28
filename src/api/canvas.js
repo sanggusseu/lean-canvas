@@ -33,3 +33,7 @@ export const getCanvasById = id => {
 export const updateTitle = async (id, title) => {
   await canvases.patch(`/${id}`, { title });
 };
+
+export const updateCanvas = async (id, canvas) => {
+  await canvases.put(`/${id}`, canvas);
+};

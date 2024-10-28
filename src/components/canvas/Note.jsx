@@ -6,13 +6,25 @@ export default function Note({
   content,
   color: initalColor,
   onRemoveNote,
+  onUpdateNote,
 }) {
+  const [localContent, setLocalContent] = useState(content);
+
   const colorOptions = [
     'bg-yellow-300',
     'bg-pink-300',
     'bg-blue-300',
     'bg-green-300',
   ];
+
+  const handleContentChange = () => {
+    onUpdateNote(id, localContent, color);
+  };
+
+  const handleColorChange = newColor => {
+    setColor(newColor);
+    onUpdateNote(id, content, newColor);
+  };
 
   const [color, setColor] = useState(() => {
     if (initalColor) return initalColor;
@@ -24,6 +36,7 @@ export default function Note({
   const textareaRef = useRef(null);
   useEffect(() => {
     if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height =
         textareaRef.current.scrollHeight + 'px';
     }
@@ -47,7 +60,10 @@ export default function Note({
           </button>
         ) : (
           <button
-            onClick={() => onRemoveNote(id)}
+            onClick={e => {
+              e.stopPropagation();
+              onRemoveNote(id);
+            }}
             aria-label="Close Note"
             className="text-gray-700"
           >
@@ -56,8 +72,10 @@ export default function Note({
         )}
       </div>
       <textarea
-        value={content}
+        value={localContent}
         ref={textareaRef}
+        onChange={e => setLocalContent(e.target.value)}
+        onBlur={handleContentChange}
         className={`w-full h-full bg-transparent resize-none border-none focus:outline-none text-gray-900 overflow-hidden`}
         aria-label="Edit Note"
         placeholder="메모를 작성하세요."
@@ -72,7 +90,7 @@ export default function Note({
               key={index}
               className={`w-6 h-6 rounded-full cursor-pointer outline outline-gray-50 ${option}`}
               aria-label={`Change color to ${option}`}
-              onClick={() => setColor(option)}
+              onClick={() => handleColorChange(option)}
             />
           ))}
         </div>
