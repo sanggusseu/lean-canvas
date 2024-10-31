@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { canvases } from './http';
 import { v4 as uuidv4 } from 'uuid';
 
-export const getCanvases = params => {
+export const getCanvases = async params => {
   const payload = Object.assign(
     {
       _sort: 'lastModified',
@@ -10,7 +10,8 @@ export const getCanvases = params => {
     },
     params,
   );
-  return canvases.get('/', { params: payload });
+  const { data } = await canvases.get('/', { params: payload });
+  return data;
 };
 
 export const createCanvas = () => {
