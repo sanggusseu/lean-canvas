@@ -7,15 +7,21 @@ import Loading from '../components/common/Loading';
 import Error from '../components/common/Error';
 import Button from '../components/common/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import CategoryFilter from '../components/home/CategoryFilter';
 
 function Home() {
   const queryClient = useQueryClient();
-  const [searchText, setSearchText] = useState('');
   const [isGridView, setIsGridView] = useState(true);
+  const [filter, setFilter] = useState({
+    searchText: undefined,
+    category: undefined,
+  });
+  const handleFilter = (key, value) => setFilter({ ...filter, [key]: value });
   // 1] 조회
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['canvases', searchText],
-    queryFn: searchText => getCanvases({ title_like: searchText }),
+    queryKey: ['canvases', filter.searchText, filter.category],
+    queryFn: () =>
+      getCanvases({ title_like: filter.searchText, category: filter.category }),
     initialData: [],
   });
 
@@ -45,7 +51,14 @@ function Home() {
   return (
     <>
       <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
-        <SearchBar searchText={searchText} setSearchText={setSearchText} />
+        <SearchBar
+          searchText={filter.searchText}
+          onSearch={val => handleFilter('searchText', val)}
+        />
+        <CategoryFilter
+          category={filter.category}
+          onChange={val => handleFilter('category', val)}
+        />
         <ViewToggle isGridView={isGridView} setIsGridView={setIsGridView} />
       </div>
       <div className="flex justify-end mb-6">
@@ -59,7 +72,7 @@ function Home() {
       {!isLoading && !error && (
         <CanvasList
           filteredData={data}
-          searchText={searchText}
+          searchText={filter.searchText}
           isGridView={isGridView}
           onDeleteItem={handleDeleteItem}
         />

@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-export default function SearchBar({ searchText, setSearchText }) {
+export default function SearchBar({ searchText = '', onSearch }) {
+  const [localSearchText, setLocalSearchText] = useState(searchText);
   return (
     <div className="relative w-full sm:w-64 mb-4 sm:mb-0">
       <input
-        value={searchText}
-        onChange={e => setSearchText(e.target.value)}
+        value={localSearchText}
+        onChange={e => setLocalSearchText(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter') {
+            onSearch(localSearchText);
+          }
+        }}
         type="text"
         placeholder="검색"
         className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
